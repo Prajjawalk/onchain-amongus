@@ -1,6 +1,13 @@
-# Semaphore Hardhat + Next.js + SemaphoreEthers template
+# Among Us
 
-This project is a complete application that demonstrates a basic Semaphore use case. It comes with a sample contract, a test for that contract and a sample task that deploys that contract. It also contains a frontend to play around with the contract.
+This project is an onchain version of the popular game "Among Us".
+
+Among us is a very popular mobile game where there are a group of crew members and there is a killer among them. We have created an onchain version of Among Us where every player stake 10 $AMONGUS tokens to enter the game. The crew members and killer each gets one turn each to perform their actions -
+
+-   Killer: kills one of the crew members every turn and gets his staked tokens
+-   Crew members: decide and vote on every turn on who is the killer and the highest voted member gets kicked out
+-   If killer gets identified and voted out then the remaining staked tokens gets redistributed among all the remaining crew members, killer loses his staked tokens but still gets the staked tokens of his kills
+-   If the killer manages to kill most of the crew members and only one crew member is left in the end, the killer gets all the staked tokens.
 
 ## 📜 Usage
 
@@ -25,35 +32,9 @@ yarn dev
 1. Go to the `apps/contracts` directory and deploy your contract:
 
 ```bash
-yarn deploy --semaphore <semaphore-address> --group <group-id> --network arbitrum-goerli
+yarn deploy --network scrollSepolia
 ```
 
 2. Update your `.env` file with your new contract address, the group id and the semaphore contract address.
 
 3. Copy your contract artifacts from `apps/contracts/build/contracts/contracts` folder to `apps/web-app/contract-artifacts` folders manually. Or run `yarn copy:contract-artifacts` in the project root to do it automatically.
-
-> **Note**  
-> Check the Semaphore contract addresses [here](https://docs.semaphore.pse.dev/deployed-contracts).
-
-> **Warning**  
-> The group id is a number!
-
-### Code quality and formatting
-
-Run [ESLint](https://eslint.org/) to analyze the code and catch bugs:
-
-```bash
-yarn lint
-```
-
-Run [Prettier](https://prettier.io/) to check formatting rules:
-
-```bash
-yarn prettier
-```
-
-or to automatically format the code:
-
-```bash
-yarn prettier:write
-```
