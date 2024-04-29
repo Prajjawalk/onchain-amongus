@@ -10,7 +10,8 @@ import { NetworksUserConfig } from "hardhat/types"
 import { resolve } from "path"
 import "solidity-coverage"
 import { config } from "./package.json"
-import "./tasks/deploy"
+import "hardhat-deploy"
+import "hardhat-deploy-ethers"
 
 dotenvConfig({ path: resolve(__dirname, "../../.env") })
 
@@ -64,9 +65,20 @@ const hardhatConfig: HardhatUserConfig = {
         cache: config.paths.cache,
         artifacts: config.paths.build.contracts
     },
+    namedAccounts: {
+        deployer: {
+            // By default, it will take the first Hardhat account as the deployer
+            default: 0
+        }
+    },
     networks: {
         hardhat: {
             chainId: 1337
+        },
+        scrollSepolia: {
+            url: "https://sepolia-rpc.scroll.io",
+            chainId: 534351,
+            accounts: [`0x${process.env.ETHEREUM_PRIVATE_KEY}`]
         },
         ...getNetworks()
     },
@@ -77,7 +89,7 @@ const hardhatConfig: HardhatUserConfig = {
     },
     typechain: {
         outDir: config.paths.build.typechain,
-        target: "ethers-v5"
+        target: "ethers-v6"
     },
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY
