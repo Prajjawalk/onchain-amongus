@@ -5,10 +5,13 @@ import { BigNumber, utils } from "ethers"
 import getNextConfig from "next/config"
 import { useRouter } from "next/router"
 import { useCallback, useContext, useEffect, useState } from "react"
-import Feedback from "../../contract-artifacts/Feedback.json"
-import Stepper from "../components/Stepper"
-import LogsContext from "../context/LogsContext"
-import SemaphoreContext from "../context/SemaphoreContext"
+import { scrollSepolia } from "viem/chains"
+import { createWalletClient, custom, createPublicClient, http, getContract } from "viem"
+import Feedback from "../../../contract-artifacts/Feedback.json"
+import Stepper from "../../components/Stepper"
+import LogsContext from "../../context/LogsContext"
+import SemaphoreContext from "../../context/SemaphoreContext"
+import deployedContracts from "../../../contracts/deployedContracts"
 
 const { publicRuntimeConfig: env } = getNextConfig()
 
@@ -18,6 +21,20 @@ export default function ProofsPage() {
     const { _users, _feedback, refreshFeedback, addFeedback } = useContext(SemaphoreContext)
     const [_loading, setLoading] = useState(false)
     const [_identity, setIdentity] = useState<Identity>()
+    const [walletClient, setWalletClient] = useState<any>()
+    const [players, setPlayers] = useState<any>()
+
+    const publicClient = createPublicClient({
+        chain: scrollSepolia,
+        transport: http("https://sepolia-rpc.scroll.io")
+    })
+
+    const gameContract = getContract({
+        address: router.query.contract as `0x${string}`,
+        abi: deployedContracts[534351].Game.abi,
+        // 1b. Or public and/or wallet clients
+        client: { public: publicClient, wallet: walletClient }
+    })
 
     useEffect(() => {
         const identityString = localStorage.getItem("identity")
@@ -35,6 +52,24 @@ export default function ProofsPage() {
             setLogs(`${_feedback.length} feedback retrieved from the group 🤙🏽`)
         }
     }, [_feedback])
+
+    useEffect(() => {
+        setWalletClient(
+            createWalletClient({
+                chain: scrollSepolia,
+                transport: custom(window.ethereum as any)
+            })
+        )
+    }, [setWalletClient, createWalletClient])
+
+    useEffect(() => {
+        async function getPlayers() {
+            const _players = await gameContract.read.getAllPlayers()
+            setPlayers(_players)
+        }
+
+        getPlayers()
+    })
 
     const sendFeedback = useCallback(async () => {
         if (!_identity) {
@@ -107,25 +142,33 @@ export default function ProofsPage() {
 
     return (
         <>
-            <h2>Proofs</h2>
+            <h2>Game Arena</h2>
 
             <p>
-                Semaphore members can anonymously{" "}
-                <a
-                    href="https://semaphore.pse.dev/docs/guides/proofs"
-                    target="_blank"
-                    rel="noreferrer noopener nofollow"
-                >
-                    prove
-                </a>{" "}
-                that they are part of a group and that they are generating their own signals. Signals could be anonymous
-                votes, leaks, reviews, or feedback.
+                You can see the list of all your crewmates here. Beware one of them is the killer! If you are the
+                killer, shh don't get caught!
             </p>
+            <br></br>
+            <p>
+                There will be turn for each player to vote and eliminate killer so choose wisely and don't let the
+                killer win.
+            </p>
+            <div className="divider"></div>
+            <h3>Players list</h3>
+            {players?.length > 0 && (
+                <div>
+                    {players.map((player: `0x${string}`, i: number) => (
+                        <div key={i} className="flex flex-row">
+                            <p className="box box-text">{player}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className="divider"></div>
 
             <div className="text-top">
-                <h3>Feedback signals ({_feedback.length})</h3>
+                <h3>Messages ({_feedback.length})</h3>
                 <button className="button-link" onClick={refreshFeedback}>
                     Refresh
                 </button>
@@ -133,7 +176,7 @@ export default function ProofsPage() {
 
             <div>
                 <button className="button" onClick={sendFeedback} disabled={_loading}>
-                    <span>Send Feedback</span>
+                    <span>Send message</span>
                     {_loading && <div className="loader"></div>}
                 </button>
             </div>
