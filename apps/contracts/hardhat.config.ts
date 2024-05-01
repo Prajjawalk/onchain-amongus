@@ -92,7 +92,19 @@ const hardhatConfig: HardhatUserConfig = {
         target: "ethers-v6"
     },
     etherscan: {
-        apiKey: process.env.ETHERSCAN_API_KEY
+        apiKey: {
+            "scroll-sepolia": String(process.env.SCROLLSCAN_API_KEY) // make yours at scrollscan.com
+        },
+        customChains: [
+            {
+                network: "scroll-sepolia",
+                chainId: 534351,
+                urls: {
+                    apiURL: "https://api-sepolia.scrollscan.com/api",
+                    browserURL: "https://sepolia.scrollscan.com/"
+                }
+            }
+        ]
     }
 }
 

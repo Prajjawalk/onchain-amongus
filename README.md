@@ -9,6 +9,14 @@ Among us is a very popular mobile game where there are a group of crew members a
 -   If killer gets identified and voted out then the remaining staked tokens gets redistributed among all the remaining crew members, killer loses his staked tokens but still gets the staked tokens of his kills
 -   If the killer manages to kill most of the crew members and only one crew member is left in the end, the killer gets all the staked tokens.
 
+## Contracts
+
+Amongus Token - [0x01a9c16CaaE846A13d4Bd262dA24Cbb47175804e](https://sepolia.scrollscan.com/address/0x01a9c16CaaE846A13d4Bd262dA24Cbb47175804e)
+Crew Verifier - [0xBef5d0f51d8019A999a1AfA72FEb5e0bFE0c071E](https://sepolia.scrollscan.com/address/0xBef5d0f51d8019A999a1AfA72FEb5e0bFE0c071E)
+Killer Verifier - [0x91de4D34EcB20CFBA526afE5a199fAa79F92ba51](https://sepolia.scrollscan.com/address/0x91de4D34EcB20CFBA526afE5a199fAa79F92ba51)
+Game - ["0xBe02DCd19FC7AE9b509bDfFEA08c6612C1a4deDF"](https://sepolia.scrollscan.com/address/0xBe02DCd19FC7AE9b509bDfFEA08c6612C1a4deDF)
+GameFactory - ["0xe7343Df475F8D890B13C09085CC65617386F2cE7"](https://sepolia.scrollscan.com/address/0xe7343Df475F8D890B13C09085CC65617386F2cE7)
+
 ## 📜 Usage
 
 Copy the `.env.example` file as `.env`:
